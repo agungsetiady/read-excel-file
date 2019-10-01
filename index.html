@@ -1,0 +1,99 @@
+<html>
+	<head>
+		<title>Read Excel Using Jquery</title>
+		<meta charset="utf-8">
+		<script src="xl.js"></script>
+		<style>
+			body
+			{
+				margin : 20px;
+				font-family : Arial, Helvetica;
+			}
+
+			#input
+			{
+				margin-top    : 20px;
+				margin-bottom : 10px;
+			}
+
+
+			#result-table table
+			{
+				width : 100%;
+				border-collapse : collapse;
+				margin-top    : 2.5em;
+				margin-bottom : 2.5em;
+				font-size     : 12px;
+  		}
+
+			#result-table table td
+			{
+				border : 1px solid black;
+				padding : 0.5em;
+
+				text-overflow : ellipsis;
+				overflow      : hidden;
+				max-width     : 10em;
+				white-space   : nowrap;
+			}
+
+			#main-link
+			{
+				display     : block;
+				font-size   : 24px;
+				color       : #0093C4;
+				font-family : monospace;
+				text-decoration : none;
+			}
+
+			input[type="file"] {
+			    display: none;
+			}
+			.custom-file-upload {
+			    border: 1px solid #ccc;
+			    display: inline-block;
+			    padding: 6px 12px;
+			    cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1 id="main-link" href="#">Read Excel File</h1>
+		<label class="custom-file-upload">
+		    <input type="file" id="input" />
+		    <i class="fa fa-cloud-upload"></i> Import Excel
+		</label>
+		<div id="result-table"></div>
+		<pre id="result"></pre>
+		<script>
+			var input = document.getElementById('input')
+
+			input.addEventListener('change', function() {
+			  readXlsxFile(input.files[0], { dateFormat: 'MM/DD/YY' }).then(function(data) {
+			    // `data` is an array of rows
+			    // each row being an array of cells.
+			    // document.getElementById('result').innerText = JSON.stringify(data, null, 2)
+
+			    document.getElementById('result-table').innerHTML =
+			    	'<table>' +
+			    	'<tbody>' +
+			    	data.map(function (row) {
+			    		return '<tr>' +
+			    			row.map(function (cell) {
+			    				return '<td><input type="hidden" value="'+ (cell === null ? '' : cell) +'">' +
+				    				(cell === null ? '' : cell) +
+				    				'</td>'
+			    			}).join('') +
+			    			'</tr>'
+			    	}).join('') +
+			    	'</tbody>' +
+			    	'</table>'
+			  }, function (error) {
+			  	console.error(error)
+			  	alert("Error while parsing Excel file. See console output for the error stack trace.")
+			  })
+			})
+		</script>
+	</body>
+</html>
